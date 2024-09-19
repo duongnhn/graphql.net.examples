@@ -1,8 +1,6 @@
 using CatalogExample.Schema;
 using CatalogExample.Services;
 using GraphQL;
-using GraphQL.Caching;
-using GraphQL.MicrosoftDI;
 using GraphQL.SystemTextJson;
 using Microsoft.Extensions.Options;
 
@@ -27,8 +25,8 @@ namespace CatalogExample
                 .AddSystemTextJson()
                 //.AddValidationRule<InputValidationRule>()
                 .AddGraphTypes(typeof(CatalogSchema).Assembly)
-                .AddMemoryCache()
-                .AddApolloTracing(options => options.RequestServices!.GetRequiredService<IOptions<CatalogExample.GraphQLSettings>>().Value.EnableMetrics));
+                .UseMemoryCache()
+                .UseApolloTracing(options => options.RequestServices!.GetRequiredService<IOptions<CatalogExample.GraphQLSettings>>().Value.EnableMetrics));
 
             services.Configure<CatalogExample.GraphQLSettings>(Configuration.GetSection("GraphQLSettings"));
             services.AddLogging(builder => builder.AddConsole());
@@ -42,6 +40,7 @@ namespace CatalogExample
             if (env.IsDevelopment())
                 app.UseDeveloperExceptionPage();
 
+            app.UseWebSockets();
             app.UseRouting();
             app.UseEndpoints(endpoints =>
             {
@@ -50,7 +49,6 @@ namespace CatalogExample
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
 
-            app.UseWebSockets();
             app.UseDefaultFiles();
             app.UseStaticFiles();
         }

@@ -1,4 +1,5 @@
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using CatalogExample.Models;
 
 namespace CatalogExample.Services;
@@ -36,10 +37,6 @@ public class ItemService : IItemService
         _items.Add(item);
         return Task.FromResult(item);
     }
-    public IObservable<Item> ItemObservable()
-    {
-        return _items.ToObservable();
-    }
 }
 
 public interface IItemService
@@ -48,5 +45,4 @@ public interface IItemService
     Task<IEnumerable<Item>> GetItemsAsync();
     Task<IEnumerable<Item>> GetItemsByIdsAsync(List<int> ids);
     Task<Item> CreateAsync(Item item);
-    IObservable<Item> ItemObservable();
 }

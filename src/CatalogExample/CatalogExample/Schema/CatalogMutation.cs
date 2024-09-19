@@ -10,11 +10,10 @@ public class CatalogMutation : ObjectGraphType<object>
     public CatalogMutation(IItemService itemService, IManifestService manifestService)
     {
         Name = "Mutation";
-        FieldAsync<ItemType>("createItem",
-            arguments: new QueryArguments(
-                new QueryArgument<NonNullGraphType<ItemCreateInputType>> { Name = "item", Description = "the item to create" }
-            ),
-            resolve: async context =>
+        Field<ItemType>("createItem")
+            .Argument<NonNullGraphType<ItemCreateInputType>>("item", "the item to create")
+            .ResolveAsync(
+            async context =>
             {
                 var itemInput = context.GetArgument<ItemCreateInput>("item");
                 var itemToCreate = new Item(itemInput.Id, itemInput.Name, itemInput.Description);
@@ -22,11 +21,10 @@ public class CatalogMutation : ObjectGraphType<object>
             }
         );
 
-        FieldAsync<ManifestType>("createManifest",
-            arguments: new QueryArguments(
-                new QueryArgument<NonNullGraphType<ManifestCreateInputType>> { Name = "manifest", Description = "the manifest to create" }
-            ),
-            resolve: async context =>
+        Field<ManifestType>("createManifest")
+            .Argument<NonNullGraphType<ManifestCreateInputType>>("manifest", "the manifest to create")
+            .ResolveAsync(
+            async context =>
             {
                 var manifestInput = context.GetArgument<ManifestCreateInput>("manifest");
                 var manifestToCreate = new Manifest(manifestInput.Id, manifestInput.Name, manifestInput.Description, manifestInput.ItemIds);
