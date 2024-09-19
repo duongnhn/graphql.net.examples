@@ -6,11 +6,9 @@ namespace CatalogExample.Services;
 public class ItemService : IItemService
 {
     private readonly IList<Item> _items;
-    private readonly IItemEventService _itemEventService;
 
-    public ItemService(IItemEventService itemEventService)
+    public ItemService()
     {
-        _itemEventService = itemEventService;
         _items = new List<Item>();
         _items.Add(new Item(1, "item1", "this is description for item1."));
         _items.Add(new Item(2, "item2", "this is description for item2."));
@@ -36,8 +34,6 @@ public class ItemService : IItemService
     public Task<Item> CreateAsync(Item item)
     {
         _items.Add(item);
-        var itemEvent = new ItemEvent(item.Id, item.Name);
-        _itemEventService.AddEvent(itemEvent);
         return Task.FromResult(item);
     }
     public IObservable<Item> ItemObservable()
